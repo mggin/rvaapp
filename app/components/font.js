@@ -1,0 +1,7 @@
+export const righteous = 'Righteous-Regular'
+export const zawgyi = 'Zawgyi-One'
+export const cabin_bold = 'Cabin-Bold'
+export const cabin_semibold = 'Cabin-SemiBold'
+export const cabin_medium = 'Cabin-Medium'
+export const cabin_regular = 'Cabin-Regular'
+export const pyidaungsu = 'pyidaungsu'
