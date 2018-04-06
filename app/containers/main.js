@@ -28,9 +28,10 @@ import { bindActionCreators } from 'redux'
 import Radio from './radio';
 import Languages from './languages';
 import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
+import { setRadio } from '../../redux/actions'
 
 
-export default class Main extends Component<{}> {
+class Main extends Component<{}> {
   
 
   state = {
@@ -71,7 +72,11 @@ export default class Main extends Component<{}> {
       }
   }
 
-  _handleIndexChange = index => this.setState({ index });
+  _handleIndexChange = (index) => {
+    console.log('hello')
+    this.props.setRadio();
+    this.setState({ index });
+  }
 
   _renderHeader = (props) => (
       <TabBar 
@@ -181,21 +186,11 @@ const styles=StyleSheet.create({
     //color: color.icon_outline,
   }
 })
-/*
-function mapStateToProps(state) {
-  return {
-    mainData: state.mainData,
-    layoutData: state.layoutData
-  }
-}
+
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
-    changeTab,
-    showScore,
-    setFontInfo,
-    storeScore,
+    setRadio,
   }, dispatch);
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(Main);
-*/
+export default connect(null, matchDispatchToProps)(Main);

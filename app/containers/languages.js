@@ -34,6 +34,9 @@ class Languages extends Component<{}> {
   state = {
     langData: langData.map((item, index) => ({key: index.toString(), lang: item.lang}))
   }
+  _onValueChange = (itemKey) => (event)=> {
+    this.props.setLang(itemKey)
+  }
 
   renderItem = (item, index) => {
     return (
@@ -44,7 +47,7 @@ class Languages extends Component<{}> {
         <View style={styles.switchBox}>
           <Switch
             style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }] }}
-            onValueChange={() => this.props.setLang(parseInt(item.key))} 
+            onValueChange={this._onValueChange(parseInt(item.key))} 
             value={this.props.langRedData.selectedLangIndex === parseInt(item.key)}
            />
         </View>

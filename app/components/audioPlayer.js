@@ -31,7 +31,9 @@ class AudioPlayer extends Component<Props> {
       count: 0,
       repeatBar: null,
       nodeJump: false,
-      currentLang: langData[this.props.langRedData.selectedLangIndex]
+      //currentLang: langData[this.props.langRedData.selectedLangIndex],
+      //buffering: false,
+      loading: false,
     }
     //this.setTimeInterval = this.setTimeInterval.bind(this)
   componentDidMount() {
@@ -73,21 +75,43 @@ class AudioPlayer extends Component<Props> {
   }
   renderControlBtn = () => {
     const btnSty = {width: 30, height: 30}
-    if (this.props.langRedData.streaming) {
+    if (this.state.loading && this.props.langRedData.streaming) {
       return (
-        <TouchableOpacity onPress={() => this.pauseAction()}>
+        <View>
+          <Image source={require('../../assets/icons/spin.gif')} style={btnSty}/>
+        </View> )
+
+    } else if (this.props.langRedData.streaming) {
+      return (
+        <TouchableOpacity onPress={this.pauseAction}>
           <Image source={require('../../assets/icons/pause.png')} style={btnSty}/>
         </TouchableOpacity> )
     } else {
       return (
-        <TouchableOpacity onPress={() => this.playAction()}>
+        <TouchableOpacity onPress={this.playAction}>
           <Image source={require('../../assets/icons/play.png')} style={btnSty}/>
         </TouchableOpacity> )
     }
     return <Image source={require('../../assets/icons/play.png')} />
   }
+
+  _onBuffer = (value) => {
+    //this.setState({buffering: true})
+    if (!value) {
+      this.setState({loading: true})
+    } else {
+      this.setState({loading: false})
+    }
+  }
+  _onLoadStart = () => {
+    this.setState({loading: true})
+  }
+  _onLoad = () => {
+    this.setState({loading: false})
+  }
   render() {
     //const height = this.props.height
+    //console.log(this.props.langRedData.currentLang)
     return (
       <View style={styles.container} ref="playerRef">
         <View style={{flex: 1, flexDirection: 'row'}}>
@@ -100,9 +124,13 @@ class AudioPlayer extends Component<Props> {
             { this.renderRow() }
           </View>
           <Audio
+            controls={true}
             paused={!this.props.langRedData.streaming}
-            //onBuffer={this.onBuffer}  
-            source={{uri: this.state.currentLang.streaming_url}}
+            onLoadStart={this._onLoadStart}
+            onLoad={this._onLoad}
+            onBuffer={this._onBuffer} 
+            playInBackground={true} 
+            source={{uri: this.props.langRedData.currentLang.streaming_url}}
            />
         </View>
       </View>

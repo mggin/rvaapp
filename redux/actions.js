@@ -13,4 +13,11 @@ export const controlAudio = (langIndex) => {
 	}
 }
 
+export const setRadio = () => {
+	return {
+		type: 'SET_RADIO',
+	}
+}
+
+
 

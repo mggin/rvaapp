@@ -2,8 +2,10 @@
 import { langData } from '../../app/components/languagesData'
 
 const initState = {
-	selectedLangIndex: 15,
+	selectedLangIndex: 9,
 	streaming: false,
+	buffering: false,
+	currentLang: langData[9],
 }
 export default function(state = initState, action) {
  	switch(action.type){
@@ -27,6 +29,20 @@ export default function(state = initState, action) {
  				}
  			}
  			break
+ 		case 'BUFFER': 
+ 			return {
+ 				...state,
+ 				buffering: true
+ 			}
+ 		case 'SET_RADIO': {
+ 			return {
+ 				...state,
+ 				currentLang: langData[state.selectedLangIndex]
+ 			}
+ 		}
+ 		case 'STOP_RADIO': {
+
+ 		}
  		default:
  			return state
  	}
