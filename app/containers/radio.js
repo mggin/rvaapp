@@ -51,30 +51,35 @@ class Radio extends Component<{}> {
 
 
   showContent = () => {
-    let runJS = `function remove(className){
-        var elements = document.getElementsByClassName(className);
+    let runJS = `function removeElement(classList){
+      for (let index = 0; index < classList.length; index++) {
+        let elements = document.getElementsByClassName(classList[index]);
         while(elements.length > 0){
           elements[0].parentNode.removeChild(elements[0]);
         }
-    } remove('col-lg-12 col-md-12 col-sm-12 col-xs-12');
-     remove('bg-rva'); remove('t3-spotlight t3-spotlight-1  row');
-     remove('wrap t3-footer');
-     remove('col-sm-4');
-     
-     remove('module-title yellow');
-     remove('container t3-mainbody');
-     remove('bg_whiteyellow');
-     document.getElementById('t3-mainnav').remove();
-     document.getElementsByClassName('col-sm-8 schedule')[0].style.color = 'white';
-     document.getElementsByClassName('col-sm-8 schedule')[0].style.fontWeight = '3000';
-     document.getElementsByClassName('col-sm-8 schedule')[0].style.backgroundColor = '#1B1E24';
-     document.getElementsByClassName('col-sm-8 schedule')[0].style.height = '100%';
-     document.getElementsByClassName('col-sm-8 schedule')[0].style.width = '100%';
-     document.getElementsByClassName('col-sm-8 schedule')[0].style.margin = '0px';
-     document.getElementsByClassName('t3-wrapper')[0].style.marginTop = '-60px';
-     document.getElementsByClassName('t3-wrapper')[0].style.backgroundColor = '#000000';
-     document.getElementsByTagName('body')[0].style.backgroundColor = '#ffffff';
-     
+      }
+    } 
+    let elementList = ['col-lg-12 col-md-12 col-sm-12 col-xs-12', 'bg-rva', 't3-spotlight t3-spotlight-1  row',
+    'wrap t3-footer', 'col-sm-4', 'module-title yellow', 'container t3-mainbody', 'bg_whiteyellow' ];
+    removeElement(elementList);
+    document.getElementById('t3-mainnav').remove();
+    let wrapBox = document.getElementsByClassName('t3-wrapper')[0];
+    let scheduleBox = document.getElementsByClassName('col-sm-8 schedule')[0];
+    let td = document.getElementsByTagName('td');
+    let thead = document.getElementsByTagName('thead');
+    let h3 = document.getElementsByTagName('h3');
+    scheduleBox.setAttribute("style", "color: white; background-color: #2f3640; width: 100%; height: 100%; margin: 0px; fontWeight: bold");
+    wrapBox.setAttribute('style', 'margin-top: -60px; backgroundColor: #000');
+    thead[0].style.backgroundColor = 'transparent';
+    for (let i = 0; i < td.length; i++) {
+      td[i].setAttribute('style', 'padding: 10px 0px 10px; font-family:  Trebuchet MS; font-weight: bold; font-size: 13px; border-top: 0.5px solid white')
+    }
+    
+    for (let j = 0; j < h3.length; j++) {
+      h3[j].innerHTML = h3[j].innerText.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase();
+      h3[j].setAttribute('style', 'color: #fbc531; font-family: Palatino; font-weight: bold; font-size: 16px');
+    }
+    
      `
     let content = null
     if (this.state.segmentedIndex === 1) {
@@ -129,7 +134,7 @@ class Radio extends Component<{}> {
 
   render() {
     return (
-      <Container style={{backgroundColor: '#353b48a7'}}>
+      <Container style={{backgroundColor: '#2f3640'}}>
         <View style={styles.segmentBox}>
           <SegmentedControlTab
             tabTextStyle={{fontFamily: font.cabin_bold, color: color.wht}}

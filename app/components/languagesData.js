@@ -14,7 +14,7 @@ export const langData = [
 	{
 		lang: 'Falam Chin',
 		streaming_url: 'http://stream.rveritas-asia.org:8000/FalamChin.mp3',
-		schedule_url: 'http://www.rveritas-asia.org/?stream_language=FlamChin#live',
+		schedule_url: 'http://www.rveritas-asia.org/?stream_language=FalamChin#live',
 		archive_url: 'http://www.rveritas-asia.org/languages/falamchin/falamchin-archive'
 	},
 	{
