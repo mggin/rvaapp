@@ -30,6 +30,10 @@ import { bindActionCreators } from 'redux'
 import AudioPlayer from '../components/audioPlayer'
 import SegmentedControlTab from 'react-native-segmented-control-tab'
 import * as Animatable from 'react-native-animatable'
+import { streamingJSRun, dailyJSRun } from '../components/webScript'
+import cheerio from 'react-native-cheerio'
+
+
 
 
 
@@ -44,48 +48,31 @@ class Radio extends Component<{}> {
   }
   _onLoad = () => {
     this.setState({webLoad: false, animation: 'fadeIn'})
+    console.log(this.state)
   }
   _onLoadStart = () => {
     this.setState({webLoad: true})
   }
-
+  _onLoadEnd = () => {
+    //this.setState({webLoad: false, animation: ''})
+  }
+  renderProgressContent = () => {
+    if (this.state.webLoad) {
+      return (
+        <View style={styles.spinBox}>
+          <Image source={require('../../assets/icons/spin.gif')} style={{width: 30, height: 30}}/>
+        </View> )
+    } else {
+      return null
+    }
+  }
 
   showContent = () => {
-    let runJS = `function removeElement(classList){
-      for (let index = 0; index < classList.length; index++) {
-        let elements = document.getElementsByClassName(classList[index]);
-        while(elements.length > 0){
-          elements[0].parentNode.removeChild(elements[0]);
-        }
-      }
-    } 
-    let elementList = ['col-lg-12 col-md-12 col-sm-12 col-xs-12', 'bg-rva', 't3-spotlight t3-spotlight-1  row',
-    'wrap t3-footer', 'col-sm-4', 'module-title yellow', 'container t3-mainbody', 'bg_whiteyellow' ];
-    removeElement(elementList);
-    document.getElementById('t3-mainnav').remove();
-    let wrapBox = document.getElementsByClassName('t3-wrapper')[0];
-    let scheduleBox = document.getElementsByClassName('col-sm-8 schedule')[0];
-    let td = document.getElementsByTagName('td');
-    let thead = document.getElementsByTagName('thead');
-    let h3 = document.getElementsByTagName('h3');
-    scheduleBox.setAttribute("style", "color: white; background-color: #2f3640; width: 100%; height: 100%; margin: 0px; fontWeight: bold");
-    wrapBox.setAttribute('style', 'margin-top: -60px; backgroundColor: #000');
-    thead[0].style.backgroundColor = 'transparent';
-    for (let i = 0; i < td.length; i++) {
-      td[i].setAttribute('style', 'padding: 10px 0px 10px; font-family:  Trebuchet MS; font-weight: bold; font-size: 13px; border-top: 0.5px solid white')
-    }
-    
-    for (let j = 0; j < h3.length; j++) {
-      h3[j].innerHTML = h3[j].innerText.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase();
-      h3[j].setAttribute('style', 'color: #fbc531; font-family: Palatino; font-weight: bold; font-size: 16px');
-    }
-    
-     `
     let content = null
     if (this.state.segmentedIndex === 1) {
       content = 
         <View style={styles.contentBox}>
-          {
+         {
             this.state.webLoad ?
             <View style={styles.spinBox}>
               <Image source={require('../../assets/icons/spin.gif')} style={{width: 30, height: 30}}/>
@@ -93,13 +80,17 @@ class Radio extends Component<{}> {
           }
           <Animatable.View animation={this.state.animation} style={{flex: 1}} duration={3000}>
             <WebView 
-              source={{uri: 'http://www.rveritas-asia.org/languages/bengali/bengali-archive'}}
+              source={{uri: this.props.langRedData.currentLang.archive_url}}
               //onLoad={}
-              //style={{marginTop: -1000}}
+              //style={{marginTop: -100}}
               onLoad={this._onLoad}
               onLoadStart={this._onLoadStart}
+              onLoadEnd = {this._onLoadEnd}
+              bounces={false}
               //renderLoading:
               javaScriptEnabled={false}
+              injectedJavaScript={dailyJSRun}
+              onNavigationStateChange={(v) => console.log(v)}
               //injectJavaScript={() => console.log()}
             />
           </Animatable.View>
@@ -107,20 +98,27 @@ class Radio extends Component<{}> {
     } else {
       content = 
       <View style={styles.contentBox}>
-        <View style={styles.scheduleBox}>
-        <WebView 
-              source={{uri: this.props.langRedData.currentLang.schedule_url}}
-              //onLoad={}
-              style={{backgroundColor: '#000000'}}
-              onLoad={this._onLoad}
-              bounces={false}
-              onLoadStart={this._onLoadStart}
-              //renderLoading:
-              //javaScriptEnabled={false}
-              injectedJavaScript={runJS}
+      {
+        this.state.webLoad ? 
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 5}}>
+          <Image source={require('../../assets/icons/spin.gif')} style={{width: 30, height: 30}}/>
+        </View> : null
+      }
+        <Animatable.View style={[styles.scheduleBox, {flex: this.state.webLoad ? 0 : 5}]} animation={this.state.animation}  duration={1000}>
+          <WebView 
+                source={{uri: this.props.langRedData.currentLang.schedule_url}}
+                //onLoad={}
+                style={{backgroundColor: '#000000'}}
+                onLoad={this._onLoad}
+                bounces={false}
+                onLoadStart={this._onLoadStart}
+                onLoadEnd = {this._onLoadEnd}
+                //renderLoading:
+                //javaScriptEnabled={false}
+                injectedJavaScript={streamingJSRun}
             />
 
-        </View>
+        </Animatable.View>
         <AudioPlayer />
 
       </View>
@@ -129,10 +127,14 @@ class Radio extends Component<{}> {
   }
 
   _onTabPress = (value) => {
-    this.setState({segmentedIndex: value})
+    this.setState({segmentedIndex: value, webLoad: false, animation: ''})
   }
 
   render() {
+    //console.log(this.state)
+    const $ = cheerio.load('<h2 class="title">Hello world</h2>')
+
+//console.log($('h2.title').text('Hello there!'))
     return (
       <Container style={{backgroundColor: '#2f3640'}}>
         <View style={styles.segmentBox}>

@@ -9,16 +9,21 @@ import Main from './app/containers/main'
 import allReds from './redux/reducers'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
+import { getArchive } from './app/components/archiveScrape'
 
 const store = createStore(allReds)
 
 export default class App extends Component<Props> {
+
+	componentDidMount() {
+		getArchive();
+	}
   
-  render() {
-    return (
-      <Provider store={store}>
-        <Main />
-      </Provider>
+  	render() {
+    	return (
+	      <Provider store={store}>
+	        <Main />
+	      </Provider>
     );
   }
 }
