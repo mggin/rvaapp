@@ -12,76 +12,52 @@ import {
   Alert,
   View,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Slider,
 } from 'react-native';
+import {
+  responsiveHeight,
+  responsiveWidth,
+  responsiveFontSize
+} from 'react-native-responsive-dimensions';
 import _ from 'lodash'
-import LinearGradient from 'react-native-linear-gradient';
 import Audio from 'react-native-video';
 import { langData } from './languagesData'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { controlRadio } from '../../redux/actions'
+import { controlAudio, setDuration, setCurrentTime, setSeekTime } from '../../redux/actions'
+import * as font from './font'
+import * as color from './color'
 
 //type Props = {};
 //const audio = new Player('http://stream.rveritas-asia.org:8000/Myanmar.mp3')
 //audio.play()
 
-class AudioPlayer extends Component<Props> {
+class DailyAudioPlayer extends Component<Props> {
   state = {
-      count: 0,
-      repeatBar: null,
-      nodeJump: false,
       //currentLang: langData[this.props.langRedData.selectedLangIndex],
       //buffering: false,
+      ms: 0,
       loading: false,
+      sliderValue: 0,
     }
     //this.setTimeInterval = this.setTimeInterval.bind(this)
-  componentDidMount() {
-    //setInterval( this.countChange, 200)
-  }
-  componentWillUnMount() {
-    console.log('un mount')
-    //clearInterval(this.state.count)
-  }
-  repeatNote = () => {
-    setInterval( this.countChange, 200)
-  }
-  countChange = () => {
-    if (this.refs.playerRef) {
-      this.setState({count: 1})
-    }
-  }
-  renderRow = () => {
-    const row = []
-    let marginLeft = 1
-    for (let item in _.range(0,28)) {
-      let height = Math.floor(Math.random() * 50)
-      row.push(
-        <LinearGradient
-          colors={['#e1b12c', '#96c93d96', '#96c93d96']}
-          key={item}
-          style={{ width: 6, height, backgroundColor: '#fbc531', borderRadius: 100, marginLeft}}/>
-        )
-      }
-    return row;
-  }
   pauseAction = () => {
-    clearInterval(this.state.repeatedBar)
-    this.props.controlRadio()
+    //clearInterval(this.state.repeatedBar)
+    this.props.controlAudio()
   }
   playAction = () => {
-    this.state.repeatedBar = setInterval( this.countChange, 200)
-    this.props.controlRadio()
+    this.props.controlAudio()
   }
   renderControlBtn = () => {
     const btnSty = {width: 30, height: 30}
-    if (this.state.loading && this.props.langRedData.streaming) {
+    if (this.state.loading && this.props.dailyRedData.playing) {
       return (
         <View>
           <Image source={require('../../assets/icons/spin.gif')} style={btnSty}/>
         </View> )
 
-    } else if (this.props.langRedData.streaming) {
+    } else if (this.props.dailyRedData.playing) {
       return (
         <TouchableOpacity onPress={this.pauseAction}>
           <Image source={require('../../assets/icons/pause.png')} style={btnSty}/>
@@ -109,9 +85,44 @@ class AudioPlayer extends Component<Props> {
   _onLoad = () => {
     this.setState({loading: false})
   }
+  _onResponderRelease = () => {
+    //console.log(value)
+    //this.props.setSeekTime(this.state.sliderValue)
+    this.player.seek(this.state.sliderValue)
+
+  }
+  _onValueChange = (value) => {
+    this.setState({sliderValue: value})
+    this.props.setSeekTime(value)
+  }
+  renderSlider = () => (
+    <Slider 
+      step={1}
+      onResponderRelease={this._onResponderRelease}
+      value={this.state.sliderValue}
+      maximumValue={this.props.dailyRedData.playableDuration}
+     // onSlidingComplete={this._onSlidingComplete}
+      onValueChange={this._onValueChange}
+      minimumTrackTintColor={'white'}
+      style={{ transform: [{ scaleX: 0.5 }, { scaleY: 0.5 }], width: responsiveWidth(110), marginLeft: -110 }}/>
+  )
+  _onProgress = (time) => {
+    //console.log(time)
+    //if (this.props.dailyRedData.currentTime < 1) {
+     // console.log(time)
+      this.props.setDuration(time.seekableDuration)
+      //console.log('setDuration')
+    //
+   //console.log('heloo')
+    this.props.setCurrentTime(time.currentTime)
+  
+  }
   render() {
     //const height = this.props.height
     //console.log(this.props.langRedData.currentLang)
+    console.disableYellowBox = true;
+    //console.log(this.props.dailyRedData.playableDuration)
+    //console.log(this.props.dailyRedData.currentTime)
     return (
       <View style={styles.container} ref="playerRef">
         <View style={{flex: 1, flexDirection: 'row'}}>
@@ -121,16 +132,21 @@ class AudioPlayer extends Component<Props> {
             </View>
           </View>
           <View style={styles.nodeBox}>
-            { this.renderRow() }
+            { this.renderSlider() }
+          </View>
+          <View style={styles.timer}>
+            <Text style={styles.timerTxt}>{this.props.dailyRedData.hours}:{this.props.dailyRedData.minutes}:{this.props.dailyRedData.seconds}</Text>
           </View>
           <Audio
             controls={true}
-            paused={!this.props.langRedData.streaming}
+            ref={(ref) => this.player = ref} 
+            paused={!this.props.dailyRedData.playing}
             onLoadStart={this._onLoadStart}
             onLoad={this._onLoad}
             onBuffer={this._onBuffer} 
             playInBackground={true} 
-            source={{uri: this.props.langRedData.currentLang.streaming_url}}
+            onProgress={this._onProgress}
+            source={{uri: this.props.dailyRedData.audio_url}}
            />
         </View>
       </View>
@@ -148,7 +164,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#353b48a7',
   },
   controlBox: {
-    flex: 1,
+    flex: 0.8,
     alignItems: 'center',
     justifyContent: 'center',
     //backgroundColor: '#000000'
@@ -164,28 +180,45 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nodeBox: {
-    flex: 1.5,
+    flex: 2,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
     //backgroundColor: '#F5FCFF',
+  },
+  timer: {
+    flex: 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  timerTxt: {
+    width: 100,
+    fontSize: 12,
+    fontFamily: font.cabin_regular,
+    color: color.header,
+    paddingHorizontal: 10,
+    lineHeight: 20,
+    textAlign: 'center'
   }
 });
 
 function mapStateToProps(state) {
   return {
-    langRedData: state.langRedData,
+    dailyRedData: state.dailyRedData,
 
   }
 }
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
-    controlRadio,
+    controlAudio,
+    setDuration,
+    setCurrentTime,
+    setSeekTime,
     //showScore,
     //setFontInfo,
     //storeScore,
   }, dispatch);
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(AudioPlayer);
+export default connect(mapStateToProps, matchDispatchToProps)(DailyAudioPlayer);
 

@@ -16,7 +16,7 @@ export default function(state = initState, action) {
  				selectedLangIndex: action.langIndex
  			}
  			break
- 		case 'CONTROL_AUDIO':
+ 		case 'CONTROL_RADIO':
  			if (state.streaming) {
  				return {
  					...state,

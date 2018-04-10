@@ -35,12 +35,28 @@ class DailyProgram extends Component<{}> {
   constructor(props) {
     super(props)
     this.state = {
+      webLoad: false
     }
   }
 
   render() {
     return (
       <Container style={{backgroundColor: '#2f3640'}}>
+        <Animatable.View animation={this.state.animation} style={{flex: 1}} duration={3000}>
+            <WebView 
+              source={{uri: this.props.langRedData.currentLang.archive_url}}
+              //onLoad={}
+              //style={{marginTop: -100}}
+              onLoad={this._onLoad}
+              onLoadStart={this._onLoadStart}
+              onLoadEnd = {this._onLoadEnd}
+              bounces={false}
+              //renderLoading:
+              javaScriptEnabled={false}
+              onNavigationStateChange={(v) => console.log(v)}
+              //injectJavaScript={() => console.log()}
+            />
+          </Animatable.View>
 
       </Container>
     );

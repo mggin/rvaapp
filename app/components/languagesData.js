@@ -87,7 +87,7 @@ export const langData = [
 		lang: 'Telugu',
 		streaming_url: 'http://stream.rveritas-asia.org:8000/Telugu.mp3',
 		schedule_url: 'http://www.rveritas-asia.org/?stream_language=Telugu#live',
-		archive_url: 'http://apps.rveritas-asia.org/TeleguArchive.php'
+		archive_url: 'http://apps.rveritas-asia.org/TeluguArchive.php'
 	},
 	{
 		lang: 'Tedim Chin',

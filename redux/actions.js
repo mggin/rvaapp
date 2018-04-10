@@ -7,9 +7,9 @@ export const setLang = (langIndex) => {
 	}
 }
 
-export const controlAudio = (langIndex) => {
+export const controlRadio = (langIndex) => {
 	return {
-		type: 'CONTROL_AUDIO',
+		type: 'CONTROL_RADIO',
 	}
 }
 
@@ -18,6 +18,41 @@ export const setRadio = () => {
 		type: 'SET_RADIO',
 	}
 }
+
+export const setAudio = (url) => {
+	return {
+		type: 'SET_AUDIO',
+		url
+	}
+}
+
+export const controlAudio = () => {
+	return {
+		type: 'CONTROL_AUDIO',
+	}
+}
+
+export const setDuration = (time) => {
+	return {
+		type: 'SET_DURATION',
+		time
+	}
+}
+
+export const setCurrentTime = (currentTime) => {
+	return {
+		type: 'SET_CURRENT_TIME',
+		currentTime
+	}
+}
+
+export const setSeekTime = (sliderValue) => {
+	return {
+		type: 'SET_SEEK_TIME',
+		sliderValue
+	}
+}
+
 
 
 

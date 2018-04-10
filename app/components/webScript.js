@@ -1,3 +1,10 @@
+import {
+  responsiveHeight,
+  responsiveWidth,
+  responsiveFontSize
+} from 'react-native-responsive-dimensions'
+import * as color from './color';
+
 export const streamingJSRun = `function removeElement(classList){
       for (let index = 0; index < classList.length; index++) {
         let elements = document.getElementsByClassName(classList[index]);
@@ -39,22 +46,44 @@ export const dailyJSRun = `function removeElement(classList){
     } 
     let elementList = ['text-center', 'alert alert-info text-center', 'prototype-wrapper']
     removeElement(elementList)
-    document.getElementsByTagName('body')[0].style.backgroundColor = '#2f3640'
+    document.getElementsByTagName('body')[0].setAttribute('style', 'margin-bottom: 0px; background-color: #2f3640; font-size: 13px; font-family: Trebuchet MS')
     let tr = document.getElementsByTagName('tr')
     let td = document.getElementsByTagName('td')
+    document.getElementsByTagName('thead')[0].remove()
+    let a = document.getElementsByTagName('a')
     let item = document.getElementsByClassName('item _blank mp3')
+    let table = document.getElementsByClassName('table')
+    let li = document.getElementsByTagName('li')
+    document.getElementsByClassName('breadcrumb')[0].setAttribute('style', 'background-color: ${color.segment}')
+    for (let n = 0; n < li.length; n++) {
+      li[n].setAttribute('style', 'color: black; font-family: verdana')
+   }
     for (let i = 0; i < tr.length ; i++) {
-    	tr[i].setAttribute('style', 'background-color: #2c3e50')
-    	item[i].setAttribute('style', 'color: white')
-	}
-	for (let j = 0; j < td.length; j++) {
-		td[j].setAttribute('style', 'border: none; border-bottom: 0.5px solid white')
-	}
-	for (let k = 0; k < thead.length; k++) {
-		thead[k].remove()
-	}
-	document.getElementsByClassName('table-bordered')[0].style.border = 'none'
-	document.getElementsByClassName('container-fluid')[0].style.padding = '0px'
+      tr[i].setAttribute('style', 'background-color: transparent; ')
+   }
+   for (let j = 0; j < td.length; j++) {
+    td[j].setAttribute('style', 'background-color: transparent; border: none')
+   }
+   for (let k = 0; k < table.length; k++) {
+   }
+   for (let l = 0; l < a.length; l++) {
+      a[l].setAttribute('style', 'color: white; font-family: Trebuchet MS')
+   }
+   let menu = document.getElementsByClassName('breadcrumb')[0].getElementsByTagName('a')
+    for (let index = 0; index < menu.length; index++) {
+      menu[index].setAttribute('style', 'color: ${color.wht}; ')
+    }
+    let lil = document.getElementsByClassName('breadcrumb')[0].getElementsByTagName('li')
+   for (let m = 0; m < lil.length; m++) {
+      lil[m].setAttribute('style', 'color: white')
+   }
+   let borderBox = document.getElementsByClassName('table table-striped table-bordered')
+   for (let m = 0; m < a.length; m++) {
+      borderBox[m].setAttribute('style', 'border: none')
+   }
+   
+
+    
 
 	 document.getElementById('title').remove() 
     `

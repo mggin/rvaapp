@@ -28,10 +28,12 @@ import * as font from '../components/font';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AudioPlayer from '../components/audioPlayer'
+import DailyAudioPlayer from '../components/dailyAudioPlayer'
 import SegmentedControlTab from 'react-native-segmented-control-tab'
 import * as Animatable from 'react-native-animatable'
 import { streamingJSRun, dailyJSRun } from '../components/webScript'
 import cheerio from 'react-native-cheerio'
+import { setAudio } from '../../redux/actions'
 
 
 
@@ -66,6 +68,18 @@ class Radio extends Component<{}> {
       return null
     }
   }
+  componenetDidMount() {
+    
+  }
+  _onStateChange = (data) => {
+    this.webview.injectJavaScript(dailyJSRun)
+    if (data.url[data.url.length - 1] === '3') {
+      let delChar = data.url.substring(data.url.indexOf('&') + 6)
+      let delChars1 = delChar.substring(0, delChar.indexOf('&'))
+      console.log(delChars1)
+      this.props.setAudio(delChars1 )
+    }
+  }
 
   showContent = () => {
     let content = null
@@ -78,37 +92,39 @@ class Radio extends Component<{}> {
               <Image source={require('../../assets/icons/spin.gif')} style={{width: 30, height: 30}}/>
             </View> : null
           }
-          <Animatable.View animation={this.state.animation} style={{flex: 1}} duration={3000}>
+          <Animatable.View animation={this.state.animation} style={[styles.scheduleBox, {flex: this.state.webLoad ? 0 : 5.5}]} duration={3000}>
             <WebView 
               source={{uri: this.props.langRedData.currentLang.archive_url}}
               //onLoad={}
-              //style={{marginTop: -100}}
+              //style={{marginBottom: -5, backgroundColor: '#000000'}}
+              ref={ref => (this.webview = ref)}
               onLoad={this._onLoad}
               onLoadStart={this._onLoadStart}
               onLoadEnd = {this._onLoadEnd}
               bounces={false}
               //renderLoading:
               javaScriptEnabled={false}
-              injectedJavaScript={dailyJSRun}
-              onNavigationStateChange={(v) => console.log(v)}
+              
+              onNavigationStateChange={this._onStateChange}
               //injectJavaScript={() => console.log()}
             />
           </Animatable.View>
+          <DailyAudioPlayer />
         </View>  
     } else {
       content = 
       <View style={styles.contentBox}>
       {
         this.state.webLoad ? 
-        <View style={{justifyContent: 'center', alignItems: 'center', flex: 5}}>
+        <View style={styles.spinBox}>
           <Image source={require('../../assets/icons/spin.gif')} style={{width: 30, height: 30}}/>
         </View> : null
       }
-        <Animatable.View style={[styles.scheduleBox, {flex: this.state.webLoad ? 0 : 5}]} animation={this.state.animation}  duration={1000}>
+        <Animatable.View style={[styles.scheduleBox, {flex: this.state.webLoad ? 0 : 6}]} animation={this.state.animation}  duration={1000}>
           <WebView 
                 source={{uri: this.props.langRedData.currentLang.schedule_url}}
                 //onLoad={}
-                style={{backgroundColor: '#000000'}}
+                style={{backgroundColor: 'red',}}
                 onLoad={this._onLoad}
                 bounces={false}
                 onLoadStart={this._onLoadStart}
@@ -166,15 +182,16 @@ const styles=StyleSheet.create({
     marginBottom: 5,
   },
   contentBox: {
-    flex: 5
+    flex: 5,
   },
   spinBox: {
-    flex: 10000, // do extra
+    flex: 5, // do extra
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   scheduleBox: {
-    flex: 5
+    flex: 5,
+
   }
 })
 
@@ -186,6 +203,7 @@ function mapStateToProps(state) {
 }
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
+    setAudio
     //changeTab,
     //showScore,
     //setFontInfo,
