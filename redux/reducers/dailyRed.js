@@ -9,6 +9,7 @@ const initState = {
 	hours: '00',
 	minutes: '00',
 	seconds: '00',
+	sliderValue: 0,
 }
 export default function(state = initState, action) {
  	switch(action.type){
@@ -83,6 +84,19 @@ export default function(state = initState, action) {
 	        }
  			break
  		}
+ 		case 'RESET_CONTROL': 
+ 			return {
+ 				...state,
+ 				hours: '00',
+				minutes: '00',
+				seconds: '00',
+				sliderValue: 0
+ 			}
+ 		case 'SLIDING': 
+ 			return {
+ 				...state,
+ 				sliderValue: action.value
+ 			}
  		default:
  			return state
  	}

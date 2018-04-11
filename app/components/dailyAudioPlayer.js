@@ -25,7 +25,7 @@ import Audio from 'react-native-video';
 import { langData } from './languagesData'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { controlAudio, setDuration, setCurrentTime, setSeekTime } from '../../redux/actions'
+import { controlAudio, setDuration, setCurrentTime, setSeekTime, sliding } from '../../redux/actions'
 import * as font from './font'
 import * as color from './color'
 
@@ -39,7 +39,6 @@ class DailyAudioPlayer extends Component<Props> {
       //buffering: false,
       ms: 0,
       loading: false,
-      sliderValue: 0,
     }
     //this.setTimeInterval = this.setTimeInterval.bind(this)
   pauseAction = () => {
@@ -88,23 +87,23 @@ class DailyAudioPlayer extends Component<Props> {
   _onResponderRelease = () => {
     //console.log(value)
     //this.props.setSeekTime(this.state.sliderValue)
-    this.player.seek(this.state.sliderValue)
+    this.player.seek(this.props.dailyRedData.sliderValue)
 
   }
   _onValueChange = (value) => {
-    this.setState({sliderValue: value})
+    this.props.sliding(value)
     this.props.setSeekTime(value)
   }
   renderSlider = () => (
     <Slider 
       step={1}
       onResponderRelease={this._onResponderRelease}
-      value={this.state.sliderValue}
+      value={this.props.dailyRedData.sliderValue}
       maximumValue={this.props.dailyRedData.playableDuration}
      // onSlidingComplete={this._onSlidingComplete}
       onValueChange={this._onValueChange}
-      minimumTrackTintColor={'white'}
-      style={{ transform: [{ scaleX: 0.5 }, { scaleY: 0.5 }], width: responsiveWidth(110), marginLeft: -110 }}/>
+      minimumTrackTintColor={color.header}
+      style={{ transform: [{ scaleX: 0.5 }, { scaleY: 0.5 }], width: responsiveWidth(110), marginLeft: -100 }}/>
   )
   _onProgress = (time) => {
     //console.log(time)
@@ -214,6 +213,7 @@ function matchDispatchToProps(dispatch) {
     setDuration,
     setCurrentTime,
     setSeekTime,
+    sliding,
     //showScore,
     //setFontInfo,
     //storeScore,

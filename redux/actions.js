@@ -53,6 +53,19 @@ export const setSeekTime = (sliderValue) => {
 	}
 }
 
+export const resetControl = () => {
+	return {
+		type: 'RESET_CONTROL',
+	}
+}
+
+export const sliding = (value) => {
+	return {
+		type: 'SLIDING',
+		value
+	}
+}
+
 
 
 

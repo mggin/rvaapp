@@ -26,7 +26,7 @@ export const streamingJSRun = `function removeElement(classList){
     wrapBox.setAttribute('style', 'margin-top: -60px; backgroundColor: #000');
     thead[0].style.backgroundColor = 'transparent';
     for (let i = 0; i < td.length; i++) {
-      td[i].setAttribute('style', 'padding: 10px 0px 10px; font-family:  Trebuchet MS; font-weight: bold; font-size: 13px; border-top: 0.5px solid white')
+      td[i].setAttribute('style', 'padding: 10px 0px 10px; font-family:  Trebuchet MS; font-weight: bold; font-size: 13px; border-top: 0px solid white')
     }
     
     for (let j = 0; j < h3.length; j++) {
