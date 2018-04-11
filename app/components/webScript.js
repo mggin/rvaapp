@@ -17,21 +17,22 @@ export const streamingJSRun = `function removeElement(classList){
     'wrap t3-footer', 'col-sm-4', 'module-title yellow', 'container t3-mainbody', 'bg_whiteyellow' ];
     removeElement(elementList);
     document.getElementById('t3-mainnav').remove();
+    document.getElementsByTagName('html')[0].setAttribute('style', 'backgroundColor: red; border-color: red')
     let wrapBox = document.getElementsByClassName('t3-wrapper')[0];
     let scheduleBox = document.getElementsByClassName('col-sm-8 schedule')[0];
     let td = document.getElementsByTagName('td');
     let thead = document.getElementsByTagName('thead');
     let h3 = document.getElementsByTagName('h3');
     scheduleBox.setAttribute("style", "color: white; background-color: #2f3640; width: 100%; height: 100%; margin: 0px; fontWeight: bold");
-    wrapBox.setAttribute('style', 'margin-top: -60px; backgroundColor: #000');
+    wrapBox.setAttribute('style', 'margin-top: -60px; backgroundColor: red');
     thead[0].style.backgroundColor = 'transparent';
     for (let i = 0; i < td.length; i++) {
-      td[i].setAttribute('style', 'padding: 10px 0px 10px; font-family:  Trebuchet MS; font-weight: bold; font-size: 13px; border-top: 0px solid white')
+      td[i].setAttribute('style', 'padding: 10px 0px 10px; font-family:  Trebuchet MS; font-weight: bold; font-size: 15px; border-top: 0px solid white')
     }
     
     for (let j = 0; j < h3.length; j++) {
       h3[j].innerHTML = h3[j].innerText.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase();
-      h3[j].setAttribute('style', 'color: #fbc531; font-family: Palatino; font-weight: bold; font-size: 16px');
+      h3[j].setAttribute('style', 'color: #fbc531; font-family: Palatino; font-weight: bold; font-size: 18px');
     }
     
      `
@@ -46,7 +47,7 @@ export const dailyJSRun = `function removeElement(classList){
     } 
     let elementList = ['text-center', 'alert alert-info text-center', 'prototype-wrapper']
     removeElement(elementList)
-    document.getElementsByTagName('body')[0].setAttribute('style', 'margin-bottom: 0px; background-color: #2f3640; font-size: 13px; font-family: Trebuchet MS')
+    document.getElementsByTagName('body')[0].setAttribute('style', 'margin-bottom: 0px; background-color: #2f3640; font-size: 15px; font-family: Trebuchet MS')
     let tr = document.getElementsByTagName('tr')
     let td = document.getElementsByTagName('td')
     document.getElementsByTagName('thead')[0].remove()
@@ -67,7 +68,7 @@ export const dailyJSRun = `function removeElement(classList){
    for (let k = 0; k < table.length; k++) {
    }
    for (let l = 0; l < a.length; l++) {
-      a[l].setAttribute('style', 'color: white; font-family: Trebuchet MS')
+      a[l].setAttribute('style', 'color: white; font-size: 15px; font-family: Trebuchet MS')
    }
    let menu = document.getElementsByClassName('breadcrumb')[0].getElementsByTagName('a')
     for (let index = 0; index < menu.length; index++) {

@@ -34,7 +34,7 @@ import SegmentedControlTab from 'react-native-segmented-control-tab'
 import * as Animatable from 'react-native-animatable'
 import { streamingJSRun, dailyJSRun } from '../components/webScript'
 import cheerio from 'react-native-cheerio'
-import { setAudio, resetControl } from '../../redux/actions'
+import { setAudio, resetControl, controlAudio } from '../../redux/actions'
 
 
 
@@ -79,6 +79,7 @@ class Radio extends Component<{}> {
       console.log(delChars1)
       this.props.resetControl()
       this.props.setAudio(delChars1 )
+      //this.props.controlAudio()
     }
   }
   _onError = (error) => {
@@ -96,11 +97,11 @@ class Radio extends Component<{}> {
               <Image source={require('../../assets/icons/spin.gif')} style={{width: 30, height: 30}}/>
             </View> : null
           }
-          <Animatable.View animation={this.state.animation} style={[styles.scheduleBox, {flex: this.state.webLoad ? 0 : 5}]} duration={3000}>
+          <Animatable.View animation={this.state.animation} style={{flex: this.state.webLoad ? 0 : 5, marginBottom: -1}} duration={3000}>
             <WebView 
               source={{uri: this.props.langRedData.currentLang.archive_url}}
               //onLoad={}
-              //style={{marginBottom: -5, backgroundColor: '#000000'}}
+              style={{backgroundColor: color.bg}}
               onLoad={this._onLoad}
               onLoadStart={this._onLoadStart}
               onLoadEnd = {this._onLoadEnd}
@@ -125,10 +126,11 @@ class Radio extends Component<{}> {
           <Image source={require('../../assets/icons/spin.gif')} style={{width: 30, height: 30}}/>
         </View> : null
       }
-        <Animatable.View style={[styles.scheduleBox, {flex: this.state.webLoad ? 0 : 5}]} animation={this.state.animation}  duration={3000}>
+        <Animatable.View style={{flex: this.state.webLoad ? 0 : 5, marginBottom: -1}} animation={this.state.animation}  duration={3000}>
           <WebView 
                 source={{uri: this.props.langRedData.currentLang.schedule_url}}
                 //onLoad={}
+                style={{backgroundColor: color.bg}}
                 onLoad={this._onLoad}
                 bounces={false}
                 onLoadStart={this._onLoadStart}
@@ -161,10 +163,12 @@ class Radio extends Component<{}> {
       <Container style={{backgroundColor: '#2f3640'}}>
         <View style={styles.segmentBox}>
           <SegmentedControlTab
+            style={{overflow: 'hidden'}}
             tabTextStyle={{fontFamily: font.cabin_bold, color: color.wht}}
             activeTabTextStyle={{fontFamily: font.cabin_bold, color: color.bg}}
-            tabStyle={{backgroundColor: 'transparent', borderColor: color.wht}}
-            activeTabStyle={{backgroundColor: color.wht, borderColor: color.wht}}
+            tabStyle={{backgroundColor: 'transparent', borderColor: color.wht, borderWidth: 1, borderTopRightRadius: 2,
+borderBottomRightRadius: 2, marginRight: -1}}
+            activeTabStyle={{backgroundColor: color.wht, borderColor: color.wht,  borderWidth: 1}}
             values={['Live Streaming', 'Daily Program']}
             selectedIndex={this.state.segmentedIndex}
             onTabPress={this._onTabPress}/>
@@ -197,7 +201,6 @@ const styles=StyleSheet.create({
     alignItems: 'center',
   },
   scheduleBox: {
-    flex: 5,
 
   }
 })
@@ -212,6 +215,7 @@ function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     setAudio,
     resetControl,
+    controlAudio,
     //changeTab,
     //showScore,
     //setFontInfo,

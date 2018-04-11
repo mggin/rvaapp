@@ -103,7 +103,7 @@ class DailyAudioPlayer extends Component<Props> {
      // onSlidingComplete={this._onSlidingComplete}
       onValueChange={this._onValueChange}
       minimumTrackTintColor={color.header}
-      style={{ transform: [{ scaleX: 0.5 }, { scaleY: 0.5 }], width: responsiveWidth(110), marginLeft: -100 }}/>
+      style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }], width: responsiveWidth(80), marginLeft: -50 }}/>
   )
   _onProgress = (time) => {
     //console.log(time)
