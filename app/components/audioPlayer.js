@@ -12,7 +12,8 @@ import {
   Alert,
   View,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import _ from 'lodash'
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,27 +23,28 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { controlRadio } from '../../redux/actions'
 
-//type Props = {};
-//const audio = new Player('http://stream.rveritas-asia.org:8000/Myanmar.mp3')
-//audio.play()
-
+const {height, width} = Dimensions.get('window');
+let barNum = 28
+let barHeight = 50
+let fontSize = 15
+let controlSize = 50
+let btnSize = 30
+if (width === 768 || height === 1024) {
+  barNum += 10
+} else if (width >= 768 || height >= 1024) {
+  barNum += 28
+  barHeight += 50
+  controlSize += 20
+  btnSize += 10
+}
 class AudioPlayer extends Component<Props> {
   state = {
       count: 0,
       repeatBar: null,
       nodeJump: false,
-      //currentLang: langData[this.props.langRedData.selectedLangIndex],
-      //buffering: false,
       loading: false,
     }
-    //this.setTimeInterval = this.setTimeInterval.bind(this)
-  componentDidMount() {
-    //setInterval( this.countChange, 200)
-  }
-  componentWillUnMount() {
-    console.log('un mount')
-    //clearInterval(this.state.count)
-  }
+
   repeatNote = () => {
     setInterval( this.countChange, 200)
   }
@@ -54,8 +56,8 @@ class AudioPlayer extends Component<Props> {
   renderRow = () => {
     const row = []
     let marginLeft = 1
-    for (let item in _.range(0,28)) {
-      let height = Math.floor(Math.random() * 50)
+    for (let item in _.range(0,barNum)) {
+      let height = Math.floor(Math.random() * barHeight)
       row.push(
         <LinearGradient
           colors={['#e1b12c', '#96c93d96', '#96c93d96']}
@@ -74,7 +76,7 @@ class AudioPlayer extends Component<Props> {
     this.props.controlRadio()
   }
   renderControlBtn = () => {
-    const btnSty = {width: 30, height: 30}
+    const btnSty = {width: btnSize, height: btnSize}
     if (this.state.loading && this.props.langRedData.streaming) {
       return (
         <View>
@@ -110,8 +112,6 @@ class AudioPlayer extends Component<Props> {
     this.setState({loading: false})
   }
   render() {
-    //const height = this.props.height
-    //console.log(this.props.langRedData.currentLang)
     return (
       <View style={styles.container} ref="playerRef">
         <View style={{flex: 1, flexDirection: 'row'}}>
@@ -141,10 +141,6 @@ class AudioPlayer extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //justifyContent: 'center',
-    //flexDirection: 'row',
-    //alignItems: 'center',
-    //justifyContent: 'center',
     backgroundColor: '#353b48a7',
   },
   controlBox: {
@@ -155,8 +151,8 @@ const styles = StyleSheet.create({
 
   },
   controlHolder: {
-    width: 50,
-    height: 50,
+    width: controlSize,
+    height: controlSize,
     borderRadius: 100,
     borderWidth: 1,
     borderColor: '#ecf0f1',

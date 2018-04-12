@@ -67,6 +67,13 @@ export const sliding = (value) => {
 }
 
 
+export const getLang = (value) => {
+	return {
+		type: 'GET_LANG',
+		value
+	}
+}
+
 
 
 

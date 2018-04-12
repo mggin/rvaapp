@@ -14,7 +14,8 @@ import {
   ScrollView,
   AsyncStorage,
   FlatList,
-  Switch
+  Switch,
+  Dimensions
 } from 'react-native';
 import {
   responsiveHeight,
@@ -29,6 +30,19 @@ import { bindActionCreators } from 'redux'
 import { langData } from '../components/languagesData'
 import { setLang } from '../../redux/actions'
 
+const {height, width} = Dimensions.get('window');
+let scaleSize = 0.7
+let fontSize = 15
+let padding = 20
+let margin = 20
+if (width === 768 || height === 1024) {
+  
+} else if (width >= 768 || height >= 1024) {
+  scaleSize += 0.2
+  fontSize += 8
+  padding += 5
+  margin += 40
+}
 
 class Languages extends Component<{}> {
   state = {
@@ -46,7 +60,7 @@ class Languages extends Component<{}> {
         </View>
         <View style={styles.switchBox}>
           <Switch
-            style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }] }}
+            style={{ transform: [{ scaleX: scaleSize }, { scaleY: scaleSize }] }}
             onValueChange={this._onValueChange(parseInt(item.key))} 
             value={this.props.langRedData.selectedLangIndex === parseInt(item.key)}
            />
@@ -80,12 +94,12 @@ const styles=StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#353b48a7',
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: padding,
     margin: StyleSheet.hairlineWidth
   },
   langtxtBox: {
     flex: 4,
-    marginHorizontal: 20
+    marginHorizontal: margin
     //backgroundColor: 'white'
   },
   switchBox: {
@@ -94,7 +108,7 @@ const styles=StyleSheet.create({
   },
   langtxt: {
     color: color.wht,
-    fontSize: 15,
+    fontSize,
     fontFamily: font.cabin_bold,
   }
 

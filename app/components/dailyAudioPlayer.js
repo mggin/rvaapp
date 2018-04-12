@@ -14,6 +14,7 @@ import {
   Image,
   TouchableOpacity,
   Slider,
+  Dimensions
 } from 'react-native';
 import {
   responsiveHeight,
@@ -29,18 +30,27 @@ import { controlAudio, setDuration, setCurrentTime, setSeekTime, sliding } from 
 import * as font from './font'
 import * as color from './color'
 
-//type Props = {};
-//const audio = new Player('http://stream.rveritas-asia.org:8000/Myanmar.mp3')
-//audio.play()
+const {height, width} = Dimensions.get('window');
+let scaleSize = 0.7
+let scaleWidth = 80
+let fontSize = 12
+let btnSize = 30
+let controlSize = 50
+let marginLeft = -50
+if (width === 768 || height === 1024) {
+  marginLeft -= 50
+} else if (width >= 768 || height >= 1024) {
+  scaleSize += 0.3
+  scaleWidth -= 20
+  fontSize += 5
+  btnSize += 10
+  controlSize  += 20
+}
 
 class DailyAudioPlayer extends Component<Props> {
   state = {
-      //currentLang: langData[this.props.langRedData.selectedLangIndex],
-      //buffering: false,
-      ms: 0,
       loading: false,
     }
-    //this.setTimeInterval = this.setTimeInterval.bind(this)
   pauseAction = () => {
     //clearInterval(this.state.repeatedBar)
     this.props.controlAudio()
@@ -49,7 +59,7 @@ class DailyAudioPlayer extends Component<Props> {
     this.props.controlAudio()
   }
   renderControlBtn = () => {
-    const btnSty = {width: 30, height: 30}
+    const btnSty = {width: btnSize, height: btnSize}
     if (this.state.loading && this.props.dailyRedData.playing) {
       return (
         <View>
@@ -71,7 +81,6 @@ class DailyAudioPlayer extends Component<Props> {
   }
 
   _onBuffer = (value) => {
-    //this.setState({buffering: true})
     if (!value) {
       this.setState({loading: true})
     } else {
@@ -85,8 +94,6 @@ class DailyAudioPlayer extends Component<Props> {
     this.setState({loading: false})
   }
   _onResponderRelease = () => {
-    //console.log(value)
-    //this.props.setSeekTime(this.state.sliderValue)
     this.player.seek(this.props.dailyRedData.sliderValue)
 
   }
@@ -103,25 +110,16 @@ class DailyAudioPlayer extends Component<Props> {
      // onSlidingComplete={this._onSlidingComplete}
       onValueChange={this._onValueChange}
       minimumTrackTintColor={color.header}
-      style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }], width: responsiveWidth(80), marginLeft: -50 }}/>
+      style={{ transform: [{ scaleX: scaleSize }, { scaleY: scaleSize }], width: responsiveWidth(scaleWidth), marginLeft}}/>
   )
   _onProgress = (time) => {
     //console.log(time)
-    //if (this.props.dailyRedData.currentTime < 1) {
-     // console.log(time)
-      this.props.setDuration(time.seekableDuration)
-      //console.log('setDuration')
-    //
-   //console.log('heloo')
+    this.props.setDuration(time.seekableDuration)
+
     this.props.setCurrentTime(time.currentTime)
   
   }
   render() {
-    //const height = this.props.height
-    //console.log(this.props.langRedData.currentLang)
-    console.disableYellowBox = true;
-    //console.log(this.props.dailyRedData.playableDuration)
-    //console.log(this.props.dailyRedData.currentTime)
     return (
       <View style={styles.container} ref="playerRef">
         <View style={{flex: 1, flexDirection: 'row'}}>
@@ -156,22 +154,18 @@ class DailyAudioPlayer extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //justifyContent: 'center',
-    //flexDirection: 'row',
-    //alignItems: 'center',
-    //justifyContent: 'center',
     backgroundColor: '#353b48a7',
   },
   controlBox: {
-    flex: 0.8,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     //backgroundColor: '#000000'
 
   },
   controlHolder: {
-    width: 50,
-    height: 50,
+    width: controlSize,
+    height: controlSize,
     borderRadius: 100,
     borderWidth: 1,
     borderColor: '#ecf0f1',
@@ -192,11 +186,11 @@ const styles = StyleSheet.create({
   },
   timerTxt: {
     width: 100,
-    fontSize: 12,
+    fontSize: fontSize,
     fontFamily: font.cabin_regular,
     color: color.header,
     paddingHorizontal: 10,
-    lineHeight: 20,
+    lineHeight: fontSize + 10,
     textAlign: 'center'
   }
 });

@@ -13,7 +13,8 @@ import {
   Image,
   ScrollView,
   AsyncStorage,
-  TabBarIOS
+  TabBarIOS,
+  Dimensions
 } from 'react-native';
 import {
   responsiveHeight,
@@ -28,8 +29,23 @@ import { bindActionCreators } from 'redux'
 import Radio from './radio';
 import Languages from './languages';
 import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
-import { setRadio } from '../../redux/actions'
+import { setRadio, getLang, setLang } from '../../redux/actions'
 
+const {height, width} = Dimensions.get('window');
+let iconSize = 30
+let tabHeight = 60
+let fontSize = 11
+let headHeight = 60
+if (width === 768 || height === 1024) {
+  headHeight += 20
+} else if (width === 375 || height === 812) {
+   headHeight += 20
+} else if (width >= 768 || height >= 1024) {
+  iconSize += 25
+  tabHeight += 40
+  fontSize += 5
+  headHeight += 40
+}
 
 class Main extends Component<{}> {
   
@@ -41,9 +57,16 @@ class Main extends Component<{}> {
       { key: 'second', title: 'Languages' },
     ],
   }
+  componentWillMount() {
+    AsyncStorage.getItem('@lang')
+      .then(value => {
+         this.props.getLang(value)
+         this.props.setRadio()
+    })
+  }
 
   _renderIcon = (route) => {
-    const iconSty = {width: 30, height: 30}
+    const iconSty = {width: iconSize, height: iconSize}
       if (route.index === 0 && route.focused) {
         return  <Image source={require('../../assets/icons/wave-y.png')} style={iconSty}/>
       } else if (route.index === 0 && !route.focused) {
@@ -58,7 +81,7 @@ class Main extends Component<{}> {
     }
 
   _renderLabel = (route) => {
-    const txtSty = {fontFamily: font.cabin_bold, fontSize: 11}
+    const txtSty = {fontFamily: font.cabin_bold, fontSize}
     if (route.index === 0 && route.focused) {
         return  <Text style={[txtSty, {color: color.header}]}>RADIO</Text>
       } else if (route.index === 0 && !route.focused) {
@@ -82,10 +105,10 @@ class Main extends Component<{}> {
       <TabBar 
         {...props}
         indicatorStyle={{backgroundColor: color.footer}}
-        style={{backgroundColor: color.footer, height: 60}}
+        style={{backgroundColor: color.footer, height: tabHeight}}
         renderIcon={this._renderIcon}
         renderLabel={this._renderLabel}
-        labelStyle={{color: color.wht, fontFamily: font.cabin_bold, fontSize: 11}}
+        labelStyle={{color: color.wht, fontFamily: font.cabin_bold, fontSize}}
         />
     )
   _renderScene = SceneMap({
@@ -95,46 +118,16 @@ class Main extends Component<{}> {
 
 
   render() {
+    console.log(`height is ${height} ${width}`)
     return (
       <Container style={{backgroundColor: '#000000'}}>
         <Header hasTabs
-                style={{backgroundColor: color.header}}>
-          <Body>
-            <Title style={{fontFamily: font.righteous, color: color.header}}>RVA Mobile</Title>
+                style={{backgroundColor: color.header, height: headHeight}}>
+          <Body >
+            <Title style={{fontFamily: font.righteous, color: '#353b48', fontSize: fontSize  + 10}}>RVA</Title>
           </Body>
         </Header>
-        {/*
-        <TabBarIOS
-          style={{backgroundColor: '#000000'}}
-          barTintColor={color.footer}
-          unselectedTintColor={color.wht}
-          tintColor={color.header}
-          itemPositioning={'fill'}
-          selected='radio'>
-          <TabBarIOS.Item
-            style={{marginBottom: 40,}}
-            barTintColor={color.wht}
-            selected={this.state.selectedTab === 'radio'}
-            onPress={() => this.setState({selectedTab: 'radio'})}
-            renderAsOriginal={false}
-            title='Radio'
-            selectedIcon={require('../../assets/icons/wave-y.png')}
-            icon={require('../../assets/icons/wave-white.png')}>
-            <Radio/>
-          </TabBarIOS.Item>
-          <TabBarIOS.Item
-            //barTintColor={color.wht}
-            style={{marginBottom: 40}}
-            selected={this.state.selectedTab === 'languages'}
-            onPress={() => this.setState({selectedTab: 'languages'})}
-            title='Languages'
-            renderAsOriginal={false}
-            selectedIcon={require('../../assets/icons/lang-yellow.png')}
-            icon={require('../../assets/icons/lang-white.png')}>
-            <Languages />
-          </TabBarIOS.Item>
-        </TabBarIOS>
-      */}
+
        <TabViewAnimated
         swipeEnabled={false}
         navigationState={this.state}
@@ -155,41 +148,14 @@ const styles=StyleSheet.create({
   menu_view: {
     height: responsiveHeight(10),
   },
-   icon_box: {
-    //flexDirection: 'column',
-    //backgroundColor: color.white
-  },
-  tabBar_style: {
-  //  backgroundColor: color.white_color,
-    marginBottom: 0,
-  },
-  image_size: {
-    width: 30,
-    height: 30,
-    marginTop: 5,
-    //backgroundColor: '#000000'
-  },
-  icon_filled: {
-    fontFamily: font.cabin_bold,
-    fontSize: 10,
-    fontWeight: '800',
-    marginBottom: 4,
-    textAlign: 'center',
-    //color: color.icon_filled
-  },
-  icon_outline: {
-    fontFamily: font.cabin_bold,
-    fontSize: 10,
-    fontWeight: '800',
-    marginBottom: 4,
-    textAlign: 'center',
-    //color: color.icon_outline,
-  }
+
 })
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     setRadio,
+    getLang,
+    setRadio
   }, dispatch);
 }
 

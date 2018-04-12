@@ -16,7 +16,8 @@ import {
   TabBarIOS,
   SegmentedControlIOS,
   WebView,
-  Alert
+  Alert,
+  Dimensions
 } from 'react-native';
 import {
   responsiveHeight,
@@ -37,7 +38,19 @@ import cheerio from 'react-native-cheerio'
 import { setAudio, resetControl, controlAudio } from '../../redux/actions'
 
 
-
+const {height, width} = Dimensions.get('window');
+let marginHorizontal = 50
+let marginBottom = 5
+let padding = 0
+let fontSize = 16
+if (width === 768 || height === 1024) {
+    marginHorizontal = 200
+} else if (width >= 768 || height >= 1024) {
+    marginHorizontal = 250
+    marginBottom = 10
+    padding += 4
+    fontSize = 20
+}
 
 
 class Radio extends Component<{}> {
@@ -46,7 +59,8 @@ class Radio extends Component<{}> {
     this.state = {
       segmentedIndex: 0,
       webLoad: false,
-      animation: ''
+      animation: '',
+      showPlayer: false,
     }
   }
   _onLoad = () => {
@@ -76,10 +90,12 @@ class Radio extends Component<{}> {
     if (data.url[data.url.length - 1] === '3') {
       let delChar = data.url.substring(data.url.indexOf('&') + 6)
       let delChars1 = delChar.substring(0, delChar.indexOf('&'))
-      console.log(delChars1)
+      //console.log(delChars1)
+      this.setState({showPlayer: true})
       this.props.resetControl()
       this.props.setAudio(delChars1 )
-      //this.props.controlAudio()
+    } else {
+      this.setState({showPlayer: false})
     }
   }
   _onError = (error) => {
@@ -100,22 +116,24 @@ class Radio extends Component<{}> {
           <Animatable.View animation={this.state.animation} style={{flex: this.state.webLoad ? 0 : 5, marginBottom: -1}} duration={3000}>
             <WebView 
               source={{uri: this.props.langRedData.currentLang.archive_url}}
-              //onLoad={}
               style={{backgroundColor: color.bg}}
               onLoad={this._onLoad}
               onLoadStart={this._onLoadStart}
               onLoadEnd = {this._onLoadEnd}
               bounces={false}
-              //renderLoading:
-              javaScriptEnabled={false}
+              javaScriptEnabled={true}
               injectedJavaScript={dailyJSRun}
               onError={this._onError}
-              
               onNavigationStateChange={this._onStateChange}
-              //injectJavaScript={() => console.log()}
             />
           </Animatable.View>
-          <DailyAudioPlayer />
+          {
+            this.state.showPlayer ? 
+            <Animatable.View animation={'fadeInUpBig'} style={{flex: 1}}>
+              <DailyAudioPlayer /> 
+            </Animatable.View>
+            : null
+          }
         </View>  
     } else {
       content = 
@@ -129,20 +147,19 @@ class Radio extends Component<{}> {
         <Animatable.View style={{flex: this.state.webLoad ? 0 : 5, marginBottom: -1}} animation={this.state.animation}  duration={3000}>
           <WebView 
                 source={{uri: this.props.langRedData.currentLang.schedule_url}}
-                //onLoad={}
                 style={{backgroundColor: color.bg}}
                 onLoad={this._onLoad}
                 bounces={false}
                 onLoadStart={this._onLoadStart}
                 onLoadEnd = {this._onLoadEnd}
                 onError={this._onError}
-                //renderLoading:
-                //javaScriptEnabled={false}
+                javaScriptEnabled={true}
                 injectedJavaScript={streamingJSRun}
             />
 
         </Animatable.View>
-        <AudioPlayer />
+        <AudioPlayer /> 
+
 
       </View>
     }
@@ -155,19 +172,14 @@ class Radio extends Component<{}> {
   }
 
   render() {
-    //console.log(this.state)
-    const $ = cheerio.load('<h2 class="title">Hello world</h2>')
-
-//console.log($('h2.title').text('Hello there!'))
     return (
       <Container style={{backgroundColor: '#2f3640'}}>
         <View style={styles.segmentBox}>
           <SegmentedControlTab
             style={{overflow: 'hidden'}}
-            tabTextStyle={{fontFamily: font.cabin_bold, color: color.wht}}
-            activeTabTextStyle={{fontFamily: font.cabin_bold, color: color.bg}}
-            tabStyle={{backgroundColor: 'transparent', borderColor: color.wht, borderWidth: 1, borderTopRightRadius: 2,
-borderBottomRightRadius: 2, marginRight: -1}}
+            tabTextStyle={[styles.textSty, {color: color.wht}]}
+            activeTabTextStyle={[styles.textSty, {color: color.bg}]}
+            tabStyle={styles.tabStyle}
             activeTabStyle={{backgroundColor: color.wht, borderColor: color.wht,  borderWidth: 1}}
             values={['Live Streaming', 'Daily Program']}
             selectedIndex={this.state.segmentedIndex}
@@ -189,8 +201,8 @@ const styles=StyleSheet.create({
     flex: 0.4,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginHorizontal: 50,
-    marginBottom: 5,
+    marginHorizontal: marginHorizontal,
+    marginBottom: marginBottom,
   },
   contentBox: {
     flex: 5,
@@ -200,8 +212,18 @@ const styles=StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  scheduleBox: {
-
+  tabStyle: {
+    backgroundColor: 'transparent',
+    borderColor: color.wht,
+    borderWidth: 1,
+    borderTopRightRadius: 2,
+    borderBottomRightRadius: 2,
+    marginRight: -1,
+  },
+  textSty: {
+    fontFamily: font.cabin_bold,
+    fontSize,
+    padding,
   }
 })
 
@@ -216,10 +238,6 @@ function matchDispatchToProps(dispatch) {
     setAudio,
     resetControl,
     controlAudio,
-    //changeTab,
-    //showScore,
-    //setFontInfo,
-    //storeScore,
   }, dispatch);
 }
 

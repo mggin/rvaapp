@@ -1,5 +1,6 @@
 
 import { langData } from '../../app/components/languagesData'
+import { AsyncStorage } from 'react-native'
 
 const initState = {
 	selectedLangIndex: 9,
@@ -11,6 +12,14 @@ export default function(state = initState, action) {
  	switch(action.type){
  		//case ''
  		case 'SET_LANG':
+ 			try {
+  				AsyncStorage.setItem('@lang', action.langIndex.toString());
+			} catch (error) {
+  				// Error saving data
+  				console.log(error)
+			}
+			AsyncStorage.getItem('@lang')
+			.then(lang => {console.log(lang)})
  			return {
  				...state,
  				selectedLangIndex: action.langIndex
@@ -40,9 +49,16 @@ export default function(state = initState, action) {
  				currentLang: langData[state.selectedLangIndex]
  			}
  		}
- 		case 'STOP_RADIO': {
-
- 		}
+ 		case 'GET_LANG':
+ 			console.log(action.value)
+ 			if (action.value === null){
+ 				return state
+ 			} else {
+				return {
+					...state,
+					selectedLangIndex: parseInt(action.value)
+				}
+			}
  		default:
  			return state
  	}
