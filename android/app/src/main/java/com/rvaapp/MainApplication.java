@@ -3,6 +3,7 @@ package com.rvaapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.evollu.react.fa.FIRAnalyticsPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.otomogroove.OGReactNativeWaveform.OGWavePackage;
 import com.brentvatne.react.ReactVideoPackage;
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new FIRAnalyticsPackage(),
             new LinearGradientPackage(),
             new OGWavePackage(),
             new ReactVideoPackage(),

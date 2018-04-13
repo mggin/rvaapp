@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-firebase-analytics')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-audiowaveform')
     compile project(':react-native-video')

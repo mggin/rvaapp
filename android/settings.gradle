@@ -1,4 +1,6 @@
 rootProject.name = 'rvaapp'
+include ':react-native-firebase-analytics'
+project(':react-native-firebase-analytics').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase-analytics/android')
 include ':react-native-linear-gradient'
 project(':react-native-linear-gradient').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-linear-gradient/android')
 include ':react-native-audiowaveform'

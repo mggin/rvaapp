@@ -12,13 +12,15 @@
     "react-native": "0.54.2",
     "react-native-animatable": "^1.2.4",
     "react-native-cheerio": "^1.0.0-rc.4",
+    "react-native-firebase-analytics": "^4.0.2",
     "react-native-linear-gradient": "^2.4.0",
     "react-native-responsive-dimensions": "^1.0.2",
     "react-native-segmented-control-tab": "^3.2.2",
     "react-native-tab-view": "0.0.77",
     "react-native-video": "git+https://github.com/react-native-community/react-native-video.git",
     "react-redux": "^5.0.7",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "save": "^2.3.2"
   },
   "devDependencies": {
     "babel-jest": "22.4.3",
