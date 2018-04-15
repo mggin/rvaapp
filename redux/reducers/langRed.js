@@ -3,7 +3,7 @@ import { langData } from '../../app/components/languagesData'
 import { AsyncStorage } from 'react-native'
 
 const initState = {
-	selectedLangIndex: 9,
+	selectedLangIndex: 15,
 	streaming: false,
 	buffering: false,
 	currentLang: langData[9],

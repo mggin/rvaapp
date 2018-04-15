@@ -130,6 +130,7 @@ class AudioPlayer extends Component<Props> {
             onLoad={this._onLoad}
             onBuffer={this._onBuffer} 
             playInBackground={true} 
+            ignoreSilentSwitch={"ignore"}
             source={{uri: this.props.langRedData.currentLang.streaming_url}}
            />
         </View>

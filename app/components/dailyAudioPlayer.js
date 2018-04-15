@@ -142,6 +142,7 @@ class DailyAudioPlayer extends Component<Props> {
             onLoad={this._onLoad}
             onBuffer={this._onBuffer} 
             playInBackground={true} 
+            ignoreSilentSwitch={"ignore"}
             onProgress={this._onProgress}
             source={{uri: this.props.dailyRedData.audio_url}}
            />
